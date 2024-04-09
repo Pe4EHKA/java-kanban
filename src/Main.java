@@ -11,17 +11,19 @@ public class Main {
         TaskManager taskManager = new TaskManager();
 
         Task task1 = new Task("Закончить 4 спринт",
-                "Выполнить правильно финальный проект", Status.NEW);
+                "Выполнить правильно финальный проект");
         taskManager.createTask(task1);
 
-        Task task2 = new Task("Мультфильм", "Посмотреть Спанч-Боба", Status.DONE);
+        Task task2 = new Task("Мультфильм", "Посмотреть Спанч-Боба");
+        task2.setStatus(Status.DONE);
         taskManager.createTask(task2);
 
         Epic epic1 = new Epic("Стать Java-разработчиком", "Учиться и практиковаться");
         taskManager.createEpic(epic1);
 
-        SubTask subTask1_1 = new SubTask("JavaCore", "Изучить основы Java", Status.IN_PROGRESS, epic1);
-        SubTask subTask1_2 = new SubTask("Spring", "Изучить фреймворк Spring", Status.NEW, epic1);
+        SubTask subTask1_1 = new SubTask("JavaCore", "Изучить основы Java", epic1.getId());
+        subTask1_1.setStatus(Status.IN_PROGRESS);
+        SubTask subTask1_2 = new SubTask("Spring", "Изучить фреймворк Spring", epic1.getId());
         taskManager.createSubTask(subTask1_1);
         taskManager.createSubTask(subTask1_2);
 
@@ -29,7 +31,8 @@ public class Main {
         taskManager.createEpic(epic2);
 
         SubTask subTask2_1 = new SubTask("Презентация",
-                "Сделать презентацию по проекту", Status.DONE, epic2);
+                "Сделать презентацию по проекту", epic2.getId());
+        subTask2_1.setStatus(Status.DONE);
         taskManager.createSubTask(subTask2_1);
 
         System.out.println("Все эпики:");
@@ -61,6 +64,4 @@ public class Main {
         System.out.println(taskManager.getSubTasks());
 
     }
-
-
 }
