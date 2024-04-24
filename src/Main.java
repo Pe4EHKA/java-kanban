@@ -2,13 +2,14 @@ import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
+import service.Managers;
 import service.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefaults();
 
         Task task1 = new Task("Закончить 4 спринт",
                 "Выполнить правильно финальный проект");
