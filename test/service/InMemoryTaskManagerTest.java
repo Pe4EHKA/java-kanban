@@ -34,7 +34,7 @@ class InMemoryTaskManagerTest {
     public void shouldCreateTaskAndEqualsToHimself() {
         Task task1 = new Task(task.getName(), task.getDescription());
         task1.setId(task.getId());
-        assertEqualsTasks(task1, task, "Task should equal to his copy");
+        assertEquals(task1, task, "Task should equal to his copy");
         inMemoryTaskManager.createTask(task1);
         assertNotNull(inMemoryTaskManager.getTask(task1.getId()));
     }
@@ -45,7 +45,7 @@ class InMemoryTaskManagerTest {
         Epic epic1 = new Epic(epic.getName(), epic.getDescription());
         epic1.setId(epic.getId());
         epic1.addTask(subTask.getId());
-        assertEqualsTasks(epic1, epic, "Epic should equal to his copy");
+        assertEquals(epic1, epic, "Epic should equal to his copy");
         inMemoryTaskManager.createTask(epic1);
         assertNotNull(inMemoryTaskManager.getTask(epic1.getId()));
     }
@@ -55,7 +55,7 @@ class InMemoryTaskManagerTest {
     public void shouldCreateSubTaskAndEqualsToHimself() {
         SubTask subTask1 = new SubTask(subTask.getName(), subTask.getDescription(), subTask.getEpicId());
         subTask1.setId(subTask.getId());
-        assertEqualsTasks(subTask1, subTask, "SubTask should equal to his copy");
+        assertEquals(subTask1, subTask, "SubTask should equal to his copy");
         inMemoryTaskManager.createTask(subTask1);
         assertNotNull(inMemoryTaskManager.getTask(subTask1.getId()));
     }
@@ -90,33 +90,33 @@ class InMemoryTaskManagerTest {
     @Test
     @DisplayName("Update task")
     public void shouldUpdateTask() {
-        assertEqualsTasks(task, inMemoryTaskManager.getTask(task.getId()), "Task should equal to his copy");
+        assertEquals(task, inMemoryTaskManager.getTask(task.getId()), "Task should equal to his copy");
         task.setName("nameNew");
         task.setDescription("descriptionNew");
         task.setStatus(Status.DONE);
         inMemoryTaskManager.updateTask(task);
-        assertEqualsTasks(task, inMemoryTaskManager.getTask(task.getId()), "Task should equal to his new copy");
+        assertEquals(task, inMemoryTaskManager.getTask(task.getId()), "Task should equal to his new copy");
     }
 
     @Test
     @DisplayName("Update epic")
     public void shouldUpdateEpic() {
-        assertEqualsTasks(epic, inMemoryTaskManager.getEpic(epic.getId()), "Epic should equal to his copy");
+        assertEquals(epic, inMemoryTaskManager.getEpic(epic.getId()), "Epic should equal to his copy");
         epic.setName("nameNew");
         epic.setDescription("descriptionNew");
         inMemoryTaskManager.updateEpic(epic);
-        assertEqualsTasks(epic, inMemoryTaskManager.getEpic(epic.getId()), "Epic should equal to his new copy");
+        assertEquals(epic, inMemoryTaskManager.getEpic(epic.getId()), "Epic should equal to his new copy");
     }
 
     @Test
     @DisplayName("Update subTask")
     public void shouldUpdateSubTask() {
-        assertEqualsTasks(subTask, inMemoryTaskManager.getSubTask(subTask.getId()), "SubTask should equal to his copy");
+        assertEquals(subTask, inMemoryTaskManager.getSubTask(subTask.getId()), "SubTask should equal to his copy");
         subTask.setName("nameNew");
         subTask.setDescription("descriptionNew");
         subTask.setStatus(Status.DONE);
         inMemoryTaskManager.updateSubTask(subTask);
-        assertEqualsTasks(subTask, inMemoryTaskManager.getSubTask(subTask.getId()), "SubTask should equal to his new copy");
+        assertEquals(subTask, inMemoryTaskManager.getSubTask(subTask.getId()), "SubTask should equal to his new copy");
     }
 
     @Test
@@ -146,9 +146,9 @@ class InMemoryTaskManagerTest {
         assertEquals(inMemoryTaskManager.getHistory().size(), 3);
         List<Task> history = inMemoryTaskManager.getHistory();
         System.out.println(history);
-        assertEqualsTasks(history.getFirst(), task, "Task should equal to his new copy");
-        assertEqualsTasks(history.get(1), epic, "Epic should equal to his new copy");
-        assertEqualsTasks(history.getLast(), subTask, "SubTask should equal to his new copy");
+        assertEquals(history.getFirst(), task, "Task should equal to his new copy");
+        assertEquals(history.get(1), epic, "Epic should equal to his new copy");
+        assertEquals(history.getLast(), subTask, "SubTask should equal to his new copy");
     }
 
     @Test
@@ -174,21 +174,11 @@ class InMemoryTaskManagerTest {
     @DisplayName("TaskManagerShouldFindAllAddedTasks")
     public void shouldFindAllAddedTasks() {
         Task task1 = inMemoryTaskManager.getTask(task.getId());
-        assertEqualsTasks(task1, task, "Task should equal to itself");
+        assertEquals(task1, task, "Task should equal to itself");
         Epic epic1 = inMemoryTaskManager.getEpic(epic.getId());
-        assertEqualsTasks(epic1, epic, "Epic should equal to itself");
+        assertEquals(epic1, epic, "Epic should equal to itself");
         SubTask subTask1 = inMemoryTaskManager.getSubTask(subTask.getId());
-        assertEqualsTasks(subTask1, subTask, "SubTask should equal to itself");
+        assertEquals(subTask1, subTask, "SubTask should equal to itself");
     }
 
-    private static void assertEqualsTasks(Task expected, Task actual, String message) {
-        assertEquals(expected.getId(), actual.getId(), message + " id");
-        assertEquals(expected.getName(), actual.getName(), message + " name");
-        assertEquals(expected.getDescription(), actual.getDescription(), message + " description");
-        if (expected instanceof Epic epicExpected && actual instanceof Epic epicActual) {
-            assertArrayEquals(epicExpected.getSubTasksIds().toArray(), epicActual.getSubTasksIds().toArray(), message + " subTasks ids");
-        } else if (expected instanceof SubTask subTaskExpected && actual instanceof SubTask subTaskActual) {
-            assertEquals(subTaskExpected.getEpicId(), subTaskActual.getEpicId(), message + " epic id");
-        }
-    }
 }

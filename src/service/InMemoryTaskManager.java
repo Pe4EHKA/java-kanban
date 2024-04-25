@@ -24,11 +24,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private int generateId() {
-        ++seq;
-        while (tasks.containsKey(seq) || epics.containsKey(seq) || subTasks.containsKey(seq)) {
-            ++seq;
-        }
-        return seq;
+        return ++seq;
     }  // Генерация идентификатора.
 
     @Override

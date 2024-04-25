@@ -10,7 +10,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private final LinkedList<Task> history = new LinkedList<>();
 
-    static final int HISTORY_MAX_SIZE = 9;
+    static final int HISTORY_MAX_SIZE = 10;
 
     @Override
     public void add(Task task) {
@@ -18,7 +18,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             return;
         }
         System.out.println("В историю задач добавлена задача под номером:" + task.getId());
-        if (history.size() > HISTORY_MAX_SIZE) {
+        if (history.size() >= HISTORY_MAX_SIZE) {
             history.removeFirst();
         }
         history.addLast(task);

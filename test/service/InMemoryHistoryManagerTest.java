@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InMemoryHistoryManagerTest {
 
@@ -41,6 +40,5 @@ class InMemoryHistoryManagerTest {
         }
         List<Task> historyTasks = historyManager.getHistory();
         assertEquals(historyTasks.size(), 10);
-        assertTrue(historyTasks.size() <= 10);
     }
 }

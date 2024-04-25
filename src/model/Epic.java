@@ -1,7 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
     private final List<Integer> subTasksIds;
@@ -29,5 +31,17 @@ public class Epic extends Task {
 
     public boolean isEmpty() {
         return subTasksIds.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Epic epic = (Epic) o;
+        return this.getId() == epic.getId() &&
+                Objects.equals(this.getName(), epic.getName()) &&
+                Objects.equals(this.getDescription(), epic.getDescription()) &&
+                this.getStatus() == epic.getStatus() &&
+                Arrays.equals(this.getSubTasksIds().toArray(), epic.getSubTasksIds().toArray());
     }
 }
