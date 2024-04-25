@@ -8,10 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ManagersTest {
 
     @Test
-    @DisplayName("Should be created initialized class")
-    public void ShouldBeCreatedNormalTaskManager() {
-        TaskManager TaskManager = Managers.getDefaults();
-        assertNotNull(TaskManager);
+    @DisplayName("Should be created initialized TaskManager class")
+    public void shouldBeCreatedNormalTaskManager() {
+        assertNotNull(Managers.getDefaults());
     }
 
+    @Test
+    @DisplayName("Should be created initialized History class")
+    public void shouldBeCreatedNormalHistoryManager() {
+        assertNotNull(Managers.getDefaultHistory());
+    }
 }
