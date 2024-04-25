@@ -10,7 +10,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private final LinkedList<Task> history = new LinkedList<>();
 
-    static final int HISTORY_MAX_SIZE = 10;
+    private static final int HISTORY_MAX_SIZE = 10;
 
     @Override
     public void add(Task task) {
