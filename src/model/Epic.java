@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,13 +34,10 @@ public class Epic extends Task {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) {
+            return false;
+        }
         Epic epic = (Epic) o;
-        return this.getId() == epic.getId() &&
-                Objects.equals(this.getName(), epic.getName()) &&
-                Objects.equals(this.getDescription(), epic.getDescription()) &&
-                this.getStatus() == epic.getStatus() &&
-                Arrays.equals(this.getSubTasksIds().toArray(), epic.getSubTasksIds().toArray());
+        return Objects.equals(subTasksIds, epic.getSubTasksIds());
     }
 }

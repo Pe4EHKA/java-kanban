@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Objects;
-
 public class SubTask extends Task {
     private int epic;
 
@@ -24,13 +22,10 @@ public class SubTask extends Task {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) {
+            return false;
+        }
         SubTask subTask = (SubTask) o;
-        return this.getId() == subTask.getId() &&
-                this.getEpicId() == subTask.getEpicId() &&
-                Objects.equals(this.getName(), subTask.getName()) &&
-                Objects.equals(this.getDescription(), subTask.getDescription()) &&
-                this.getStatus() == subTask.getStatus();
+        return epic == subTask.getEpicId();
     }
 }
