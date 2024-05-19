@@ -36,26 +36,26 @@ public class Main {
         subTask2_1.setStatus(Status.DONE);
         taskManager.createSubTask(subTask2_1);
 
-        System.out.println("Все эпики:");
-        System.out.println(taskManager.getEpics());
-        System.out.println("Все задачи:");
-        System.out.println(taskManager.getTasks());
-        System.out.println("Все подзадачи:");
-        System.out.println(taskManager.getSubTasks());
-
-        task1.setStatus(Status.IN_PROGRESS);
-        taskManager.updateTask(task1);
-        taskManager.deleteByIdTask(task2.getId());
-
-        epic1.setName("Biba and Boba");
-        epic1.setDescription("Someday it will be all right");
-        taskManager.deleteByIdSubTask(subTask1_2.getId());
-        taskManager.updateEpic(epic1);
-        subTask1_1.setStatus(Status.DONE);
-        taskManager.updateSubTask(subTask1_1);
-
-        taskManager.deleteByIdEpic(epic2.getId());
-
+        System.out.println("--------------------------");
+        System.out.println("Задачи в историю добавляются в конец списка");
+        taskManager.getTask(task1.getId());
+        System.out.println(taskManager.getHistory());
+        taskManager.getTask(task2.getId());
+        System.out.println(taskManager.getHistory());
+        taskManager.getEpic(epic1.getId());
+        System.out.println(taskManager.getHistory());
+        taskManager.getSubTask(subTask1_1.getId());
+        taskManager.getSubTask(subTask1_2.getId());
+        System.out.println(taskManager.getHistory());
+        System.out.println("--------------------------");
+        System.out.println("Задачи в истории не дублируются и если одна из них была уже в истории," +
+                        " то перемещается в конец");
+        taskManager.getTask(task1.getId());
+        System.out.println(taskManager.getHistory());
+        System.out.println("--------------------------");
+        System.out.println("Вместе с эпиками из истории удаляются их подзадачи");
+        taskManager.deleteAllEpics();
+        System.out.println(taskManager.getHistory());
         System.out.println("--------------------------");
         System.out.println("Все эпики:");
         System.out.println(taskManager.getEpics());
@@ -63,6 +63,5 @@ public class Main {
         System.out.println(taskManager.getTasks());
         System.out.println("Все подзадачи:");
         System.out.println(taskManager.getSubTasks());
-
     }
 }
