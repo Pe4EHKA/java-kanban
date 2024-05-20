@@ -99,4 +99,47 @@ class InMemoryHistoryManagerTest {
         inMemoryHistoryManager.remove(epic.getId());
         assertEquals(inMemoryHistoryManager.getHistory().size(), 0);
     }
+
+    @Test
+    @DisplayName("History after deleting in the beginning should have right order of elements")
+    public void shouldOrderAfterDeletingInTheBeginning() {
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.add(subTask);
+        inMemoryHistoryManager.add(epic);
+        inMemoryHistoryManager.remove(task.getId());
+        ArrayList<Task> tasksInOrderExpected = new ArrayList<>();
+        tasksInOrderExpected.add(subTask);
+        tasksInOrderExpected.add(epic);
+        assertArrayEquals(tasksInOrderExpected.toArray(), inMemoryHistoryManager.getHistory().toArray());
+    }
+
+    @Test
+    @DisplayName("History after deleting in the middle should have right order of elements")
+    public void shouldOrderAfterDeletingInTheMiddle() {
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.add(subTask);
+        Task task4 = taskManager.createTask(new Task("name4", "desc4"));
+        task4.setId(4);
+        inMemoryHistoryManager.add(task4);
+        inMemoryHistoryManager.add(epic);
+        inMemoryHistoryManager.remove(task4.getId());
+        ArrayList<Task> tasksInOrderExpected = new ArrayList<>();
+        tasksInOrderExpected.add(task);
+        tasksInOrderExpected.add(subTask);
+        tasksInOrderExpected.add(epic);
+        assertArrayEquals(tasksInOrderExpected.toArray(), inMemoryHistoryManager.getHistory().toArray());
+    }
+
+    @Test
+    @DisplayName("History after deleting in the ending should have right order of elements")
+    public void shouldOrderAfterDeletingInTheEnd() {
+        inMemoryHistoryManager.add(epic);
+        inMemoryHistoryManager.add(subTask);
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.remove(task.getId());
+        ArrayList<Task> tasksInOrderExpected = new ArrayList<>();
+        tasksInOrderExpected.add(epic);
+        tasksInOrderExpected.add(subTask);
+        assertArrayEquals(tasksInOrderExpected.toArray(), inMemoryHistoryManager.getHistory().toArray());
+    }
 }

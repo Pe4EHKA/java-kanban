@@ -49,7 +49,7 @@ public class Main {
         System.out.println(taskManager.getHistory());
         System.out.println("--------------------------");
         System.out.println("Задачи в истории не дублируются и если одна из них была уже в истории," +
-                        " то перемещается в конец");
+                " то перемещается в конец");
         taskManager.getTask(task1.getId());
         System.out.println(taskManager.getHistory());
         System.out.println("--------------------------");
