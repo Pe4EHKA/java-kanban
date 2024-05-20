@@ -8,16 +8,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryHistoryManagerTest {
 
-    private InMemoryHistoryManager inMemoryHistoryManager;
-    private TaskManager taskManager;
+    private HistoryManager historyManager;
     private Task task;
     private Epic epic;
     private SubTask subTask;
@@ -25,121 +22,109 @@ class InMemoryHistoryManagerTest {
     @BeforeEach
     @DisplayName("Initialize of start point")
     public void init() {
-        inMemoryHistoryManager = new InMemoryHistoryManager();
-        taskManager = new InMemoryTaskManager(inMemoryHistoryManager);
-
-        task = taskManager.createTask(new Task("name1", "desc1"));
-        epic = taskManager.createEpic(new Epic("name2", "desc2"));
-        subTask = taskManager.createSubTask(new SubTask("name3", "desc3", epic.getId()));
+        historyManager = new InMemoryHistoryManager();
+        task = new Task("name1", "desc1");
+        task.setId(1);
+        epic = new Epic("name2", "desc2");
+        epic.setId(2);
+        subTask = new SubTask("name3", "desc3", epic.getId());
+        subTask.setId(3);
     }
 
     @Test
     @DisplayName("Should save old copy of task")
     public void shouldSaveOldCopyOfTask() {
-        taskManager.getTask(task.getId());
+        historyManager.add(task);
         task.setDescription("desc123");
         task.setName("name123");
         task.setStatus(Status.DONE);
-        taskManager.updateTask(task);
-        taskManager.getTask(task.getId());
-        List<Task> historyTasks = taskManager.getHistory();
-        assertEquals(historyTasks.size(), 1);  // Просмотрена задача 2 раза, но в истории только одна запись.
+        historyManager.add(task);
+        List<Task> historyTasks = historyManager.getHistory();
+        assertEquals(1, historyTasks.size());  // Просмотрена задача 2 раза, но в истории только одна запись.
         // Проверка на то, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
-        assertEquals(historyTasks.get(0).getId(), task.getId());
+        assertEquals(task.getId(), historyTasks.get(0).getId());
     }
 
     @Test
     @DisplayName("History contains only 1 task")
     public void shouldContainOnly10Tasks() {
         for (int i = 0; i < 12; i++) {
-            taskManager.getTask(task.getId());
+            historyManager.add(task);
         }
-        List<Task> historyTasks = inMemoryHistoryManager.getHistory();
-        assertEquals(historyTasks.size(), 1);
+        ;
+        assertEquals(1, historyManager.getHistory().size());
     }
 
     @Test
     @DisplayName("History contains tasks in specific order")
     public void shouldContainTasksInOrder() {
-        taskManager.getSubTask(subTask.getId());
-        taskManager.getEpic(epic.getId());
-        taskManager.getTask(task.getId());
-        ArrayList<Task> tasksInOrder = new ArrayList<>();
-        tasksInOrder.add(subTask);
-        tasksInOrder.add(epic);
-        tasksInOrder.add(task);
-        assertArrayEquals(inMemoryHistoryManager.getHistory().toArray(), tasksInOrder.toArray());
+        historyManager.add(subTask);
+        historyManager.add(epic);
+        historyManager.add(task);
+        assertEquals(List.of(subTask, epic, task), historyManager.getHistory());
     }
 
     @Test
     @DisplayName("History delete subtasks of epic")
     public void shouldDeleteSubtasksOfEpic() {
+        TaskManager taskManager = new InMemoryTaskManager(historyManager);
+        taskManager.createTask(task);
+        taskManager.createEpic(epic);
+        taskManager.createSubTask(subTask);
         taskManager.getSubTask(subTask.getId());
         taskManager.getEpic(epic.getId());
         taskManager.getTask(task.getId());
         taskManager.deleteAllEpics();
-        ArrayList<Task> tasksInOrder = new ArrayList<>();
-        tasksInOrder.add(task);
-        assertEquals(inMemoryHistoryManager.getHistory().size(), tasksInOrder.size());
-        assertEquals(inMemoryHistoryManager.getHistory().getFirst(), task);
-        assertEquals(inMemoryHistoryManager.getHistory().getLast(), task);
+        assertEquals(1, historyManager.getHistory().size());
+        assertEquals(task, historyManager.getHistory().getFirst());
+        assertEquals(task, historyManager.getHistory().getLast());
     }
 
     @Test
     @DisplayName("History remove nodes from linked list")
     public void shouldRemoveNodesFromLinkedList() {
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.add(subTask);
-        assertEquals(inMemoryHistoryManager.getHistory().size(), 3);
-        inMemoryHistoryManager.remove(task.getId());
-        assertEquals(inMemoryHistoryManager.getHistory().size(), 2);
-        inMemoryHistoryManager.remove(subTask.getId());
-        assertEquals(inMemoryHistoryManager.getHistory().size(), 1);
-        inMemoryHistoryManager.remove(epic.getId());
-        assertEquals(inMemoryHistoryManager.getHistory().size(), 0);
+        historyManager.add(task);
+        historyManager.add(epic);
+        historyManager.add(subTask);
+        assertEquals(3, historyManager.getHistory().size());
+        historyManager.remove(task.getId());
+        assertEquals(2, historyManager.getHistory().size());
+        historyManager.remove(subTask.getId());
+        assertEquals(1, historyManager.getHistory().size());
+        historyManager.remove(epic.getId());
+        assertEquals(0, historyManager.getHistory().size());
     }
 
     @Test
     @DisplayName("History after deleting in the beginning should have right order of elements")
     public void shouldOrderAfterDeletingInTheBeginning() {
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.add(subTask);
-        inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.remove(task.getId());
-        ArrayList<Task> tasksInOrderExpected = new ArrayList<>();
-        tasksInOrderExpected.add(subTask);
-        tasksInOrderExpected.add(epic);
-        assertArrayEquals(tasksInOrderExpected.toArray(), inMemoryHistoryManager.getHistory().toArray());
+        historyManager.add(task);
+        historyManager.add(subTask);
+        historyManager.add(epic);
+        historyManager.remove(task.getId());
+        assertEquals(List.of(subTask, epic), historyManager.getHistory());
     }
 
     @Test
     @DisplayName("History after deleting in the middle should have right order of elements")
     public void shouldOrderAfterDeletingInTheMiddle() {
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.add(subTask);
-        Task task4 = taskManager.createTask(new Task("name4", "desc4"));
+        historyManager.add(task);
+        historyManager.add(subTask);
+        Task task4 = new Task("name4", "desc4");
         task4.setId(4);
-        inMemoryHistoryManager.add(task4);
-        inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.remove(task4.getId());
-        ArrayList<Task> tasksInOrderExpected = new ArrayList<>();
-        tasksInOrderExpected.add(task);
-        tasksInOrderExpected.add(subTask);
-        tasksInOrderExpected.add(epic);
-        assertArrayEquals(tasksInOrderExpected.toArray(), inMemoryHistoryManager.getHistory().toArray());
+        historyManager.add(task4);
+        historyManager.add(epic);
+        historyManager.remove(task4.getId());
+        assertEquals(List.of(task, subTask, epic), historyManager.getHistory());
     }
 
     @Test
     @DisplayName("History after deleting in the ending should have right order of elements")
     public void shouldOrderAfterDeletingInTheEnd() {
-        inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.add(subTask);
-        inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.remove(task.getId());
-        ArrayList<Task> tasksInOrderExpected = new ArrayList<>();
-        tasksInOrderExpected.add(epic);
-        tasksInOrderExpected.add(subTask);
-        assertArrayEquals(tasksInOrderExpected.toArray(), inMemoryHistoryManager.getHistory().toArray());
+        historyManager.add(epic);
+        historyManager.add(subTask);
+        historyManager.add(task);
+        historyManager.remove(task.getId());
+        assertEquals(List.of(epic, subTask), historyManager.getHistory());
     }
 }
