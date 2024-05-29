@@ -33,6 +33,11 @@ public class Epic extends Task {
     }
 
     @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (!super.equals(o)) {
             return false;

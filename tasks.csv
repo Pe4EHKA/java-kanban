@@ -1,0 +1,8 @@
+id,type,name,status,description,epic
+1,TASK,Закончить 4 спринт,NEW,Выполнить правильно финальный проект,null
+2,TASK,Мультфильм,DONE,Посмотреть Спанч-Боба,null
+3,EPIC,Стать Java-разработчиком,IN_PROGRESS,Учиться и практиковаться,null
+6,EPIC,Сдать курсовой проект,DONE,Подготовить все материалы,null
+4,SUBTASK,JavaCore,IN_PROGRESS,Изучить основы Java,3
+5,SUBTASK,Spring,NEW,Изучить фреймворк Spring,3
+7,SUBTASK,Презентация,DONE,Сделать презентацию по проекту,6
