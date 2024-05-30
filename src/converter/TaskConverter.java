@@ -7,12 +7,12 @@ import java.util.List;
 
 public class TaskConverter {
 
-    public String toString(Task task) {
+    public static String toString(Task task) {
         return task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() +
                 "," + task.getDescription() + "," + task.getEpicId();
     }
 
-    public Task fromString(String string) {
+    public static Task fromString(String string) {
         List<String> data = new ArrayList<>(List.of(string.split(",")));
         int id = Integer.parseInt(data.get(0));
         TaskType type = TaskType.valueOf(data.get(1));

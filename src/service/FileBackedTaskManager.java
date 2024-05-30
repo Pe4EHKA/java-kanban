@@ -4,7 +4,6 @@ import converter.TaskConverter;
 import model.Epic;
 import model.SubTask;
 import model.Task;
-import model.TaskType;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -12,18 +11,15 @@ import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    private final TaskConverter taskConverter;
     private final File file;
 
     public FileBackedTaskManager(HistoryManager historyManager, File file) {
         super(historyManager);
-        this.taskConverter = new TaskConverter();
         this.file = file;
     }
 
     public FileBackedTaskManager(HistoryManager historyManager) {
         super(historyManager);
-        this.taskConverter = new TaskConverter();
         this.file = new File("tasks.csv");
     }
 
@@ -39,14 +35,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             reader.readLine();
             while (reader.ready()) {
                 String line = reader.readLine();
-                final Task task = taskConverter.fromString(line);
+                final Task task = TaskConverter.fromString(line);
                 final int id = task.getId();
-                if (TaskType.TASK.equals(task.getType())) {
-                    tasks.put(id, task);
-                } else if (TaskType.EPIC.equals(task.getType())) {
-                    epics.put(id, (Epic) task);
-                } else if (TaskType.SUBTASK.equals(task.getType())) {
-                    subTasks.put(id, (SubTask) task);
+                switch (task.getType()) {
+                    case TASK -> tasks.put(id, task);
+                    case EPIC -> epics.put(id, (Epic) task);
+                    case SUBTASK -> subTasks.put(id, (SubTask) task);
                 }
                 maxId = Math.max(maxId, id);
             }
@@ -58,7 +52,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 savedEpic.addTask(subTask.getId());
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error occurred during loading from file, path: " + file.getAbsolutePath(), e);
+            throw new ManagerSaveException("Error occurred during loading from file, path: "
+                    + file.getAbsolutePath(), e);
         }
         seq = maxId;
     }
@@ -69,17 +64,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             writer.write(data);
             writer.newLine();
             for (Map.Entry<Integer, Task> entry : tasks.entrySet()) {
-                data = taskConverter.toString(entry.getValue());
+                data = TaskConverter.toString(entry.getValue());
                 writer.append(data);
                 writer.newLine();
             }
             for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
-                data = taskConverter.toString(entry.getValue());
+                data = TaskConverter.toString(entry.getValue());
                 writer.append(data);
                 writer.newLine();
             }
             for (Map.Entry<Integer, SubTask> entry : subTasks.entrySet()) {
-                data = taskConverter.toString(entry.getValue());
+                data = TaskConverter.toString(entry.getValue());
                 writer.append(data);
                 writer.newLine();
             }
