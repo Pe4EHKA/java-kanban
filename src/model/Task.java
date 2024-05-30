@@ -14,6 +14,14 @@ public class Task {
         this.status = Status.NEW;
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
+    public Integer getEpicId() {
+        return null;
+    }
+
     public String getName() {
         return name;
     }

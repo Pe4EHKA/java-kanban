@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private int seq = 0;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epics;
-    private final HashMap<Integer, SubTask> subTasks;
-    private final HistoryManager historyManager;
+    protected int seq = 0;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Epic> epics;
+    protected final HashMap<Integer, SubTask> subTasks;
+    protected final HistoryManager historyManager;
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         this.tasks = new HashMap<>();
@@ -130,7 +130,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {  // Обновление.
         // Новая версия объекта с верным идентификатором передаётся в виде параметра.
         if (tasks.get(task.getId()) == null) {
-            return;
+            throw new IllegalStateException("Task with id " + task.getId() + " does not exist");
         }
         tasks.put(task.getId(), task);
     }
@@ -138,7 +138,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpic(Epic epic) {
         Epic savedEpic = epics.get(epic.getId());
-        if (savedEpic == null) return;
+        if (savedEpic == null) {
+            throw new IllegalStateException("Epic with id " + epic.getId() + " does not exist");
+        }
         savedEpic.setName(epic.getName());
         savedEpic.setDescription(epic.getDescription());
     }
@@ -147,7 +149,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubTask(SubTask subTask) {
         Integer epicId = subTask.getEpicId();
         Epic savedEpic = epics.get(epicId);
-        if (savedEpic == null) return;
+        if (savedEpic == null) {
+            throw new IllegalStateException("Epic id " + epicId + " of subtask with id " +
+                    subTask.getId() + " does not exist");
+        }
         subTasks.put(subTask.getId(), subTask);
         updateEpicStatus(savedEpic);
     }
@@ -161,7 +166,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteByIdEpic(int id) {
         Epic savedEpic = epics.remove(id);
-        if (savedEpic == null) return;
+        if (savedEpic == null) {
+            throw new IllegalStateException("Epic with id " + id + " does not exist");
+        }
         historyManager.remove(savedEpic.getId());
         for (Integer subTasksIds : savedEpic.getSubTasksIds()) {
             subTasks.remove(subTasksIds);
@@ -172,7 +179,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteByIdSubTask(int id) {
         SubTask subTask = subTasks.remove(id);
-        if (subTask == null) return;
+        if (subTask == null) {
+            throw new IllegalStateException("Subtask with id " + id + " does not exist");
+        }
         int subTaskId = subTask.getId();
         historyManager.remove(subTaskId);
         Epic savedEpic = epics.get(subTask.getEpicId());
@@ -183,7 +192,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<SubTask> getAllSubStacksByEpicId(int id) {  // Получение списка всех подзадач определённого эпика.
         Epic savedEpic = epics.get(id);
-        if (savedEpic == null) return null;
+        if (savedEpic == null) {
+            throw new IllegalStateException("Epic with id " + id + " does not exist");
+        }
         ArrayList<SubTask> subTaskArrayList = new ArrayList<>();
         for (Integer subTaskId : savedEpic.getSubTasksIds()) {
             subTaskArrayList.add(subTasks.get(subTaskId));

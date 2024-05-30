@@ -2,8 +2,11 @@ import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
+import service.FileBackedTaskManager;
 import service.Managers;
 import service.TaskManager;
+
+import java.io.File;
 
 public class Main {
 
@@ -35,33 +38,22 @@ public class Main {
                 "Сделать презентацию по проекту", epic2.getId());
         subTask21.setStatus(Status.DONE);
         taskManager.createSubTask(subTask21);
-
-        System.out.println("--------------------------");
-        System.out.println("Задачи в историю добавляются в конец списка");
-        taskManager.getTask(task1.getId());
-        System.out.println(taskManager.getHistory());
-        taskManager.getTask(task2.getId());
-        System.out.println(taskManager.getHistory());
-        taskManager.getEpic(epic1.getId());
-        System.out.println(taskManager.getHistory());
-        taskManager.getSubTask(subTask11.getId());
-        taskManager.getSubTask(subTask12.getId());
-        System.out.println(taskManager.getHistory());
-        System.out.println("--------------------------");
-        System.out.println("Задачи в истории не дублируются и если одна из них была уже в истории," +
-                " то перемещается в конец");
-        taskManager.getTask(task1.getId());
-        System.out.println(taskManager.getHistory());
-        System.out.println("--------------------------");
-        System.out.println("Вместе с эпиками из истории удаляются их подзадачи");
-        taskManager.deleteAllEpics();
-        System.out.println(taskManager.getHistory());
-        System.out.println("--------------------------");
-        System.out.println("Все эпики:");
-        System.out.println(taskManager.getEpics());
+        System.out.println("--------taskManager-----");
         System.out.println("Все задачи:");
         System.out.println(taskManager.getTasks());
+        System.out.println("Все эпики:");
+        System.out.println(taskManager.getEpics());
         System.out.println("Все подзадачи:");
         System.out.println(taskManager.getSubTasks());
+
+        TaskManager taskManagerFileBacked = FileBackedTaskManager.loadFromFileStatic(new File("tasks.csv"));
+
+        System.out.println("--------taskManagerFileBacked------");
+        System.out.println("Все задачи:");
+        System.out.println(taskManagerFileBacked.getTasks());
+        System.out.println("Все эпики:");
+        System.out.println(taskManagerFileBacked.getEpics());
+        System.out.println("Все подзадачи:");
+        System.out.println(taskManagerFileBacked.getSubTasks());
     }
 }
