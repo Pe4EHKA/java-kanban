@@ -258,8 +258,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected void recalculationOfEpicTime(Epic epic) {
-        List<Integer> SubTasksIds = epic.getSubTasksIds();
-        if (SubTasksIds.isEmpty()) {
+        List<Integer> subTasksIds = epic.getSubTasksIds();
+        if (subTasksIds.isEmpty()) {
             LocalDateTime now = LocalDateTime.now();
             Duration duration = Duration.ofMinutes(15);
             epic.setStartTime(now);
@@ -268,18 +268,18 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             LocalDateTime maxTime = LocalDateTime.MAX;
             LocalDateTime minTime = LocalDateTime.MIN;
-            for (Integer subTasksId : SubTasksIds) {
+            for (Integer subTasksId : subTasksIds) {
                 SubTask subTask = subTasks.get(subTasksId);
-                LocalDateTime SubTaskStartTime = subTask.getStartTime();
-                LocalDateTime SubTaskEndTime = subTask.getEndTime();
+                LocalDateTime subTaskStartTime = subTask.getStartTime();
+                LocalDateTime subTaskEndTime = subTask.getEndTime();
 
-                if (SubTaskStartTime.isBefore(maxTime)) {
-                    epic.setStartTime(SubTaskStartTime);
-                    maxTime = SubTaskStartTime;
+                if (subTaskStartTime.isBefore(maxTime)) {
+                    epic.setStartTime(subTaskStartTime);
+                    maxTime = subTaskStartTime;
                 }
-                if (SubTaskEndTime.isAfter(minTime)) {
-                    epic.setEndTime(SubTaskEndTime);
-                    minTime = SubTaskEndTime;
+                if (subTaskEndTime.isAfter(minTime)) {
+                    epic.setEndTime(subTaskEndTime);
+                    minTime = subTaskEndTime;
                 }
             }
         }
