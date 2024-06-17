@@ -40,12 +40,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             while (reader.ready()) {
                 String line = reader.readLine();
                 final Task task = TaskConverter.fromString(line);
-                prioritizedTasks.add(task);
                 final int id = task.getId();
                 switch (task.getType()) {
-                    case TASK -> tasks.put(id, task);
+                    case TASK -> {
+                        tasks.put(id, task);
+                        prioritizedTasks.add(task);
+                    }
                     case EPIC -> epics.put(id, (Epic) task);
-                    case SUBTASK -> subTasks.put(id, (SubTask) task);
+                    case SUBTASK -> {
+                        subTasks.put(id, (SubTask) task);
+                        prioritizedTasks.add(task);
+                    }
                 }
                 maxId = Math.max(maxId, id);
             }

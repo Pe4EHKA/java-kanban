@@ -13,7 +13,7 @@ class SubTaskTest {
     @Test
     @DisplayName("Should equals to copy")
     public void shouldEqualsToCopy() {
-        Epic epic = new Epic("name", "desc", LocalDateTime.now(), Duration.ofMinutes(15));
+        Epic epic = new Epic("name", "desc");
         epic.setId(1);
         SubTask subTask1 = new SubTask("name", "desc", epic.getId(), LocalDateTime.now(), Duration.ofMinutes(15));
         subTask1.setId(2);

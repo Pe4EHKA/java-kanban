@@ -3,9 +3,6 @@ package model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,9 +11,9 @@ class EpicTest {
     @Test
     @DisplayName("Should equals to copy")
     public void shouldEqualsToCopy() {
-        Epic epic = new Epic("name", "desc", LocalDateTime.now(), Duration.ofMinutes(15));
+        Epic epic = new Epic("name", "desc");
         epic.setId(1);
-        Epic epicCopy = new Epic("name", "desc", LocalDateTime.now(), Duration.ofMinutes(15));
+        Epic epicCopy = new Epic("name", "desc");
         epicCopy.setId(1);
         assertEqualsEpics(epic, epicCopy, "Epic should be the same");
     }

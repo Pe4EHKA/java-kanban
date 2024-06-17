@@ -27,8 +27,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager = createTaskManager();
         task = taskManager.createTask(new Task("name1", "desc1", LocalDateTime.now(),
                 Duration.ofMinutes(15)));
-        epic = taskManager.createEpic(new Epic("name2", "desc2", LocalDateTime.now().plusMinutes(20),
-                Duration.ofMinutes(15)));
+        epic = taskManager.createEpic(new Epic("name2", "desc2"));
         subTask = taskManager.createSubTask(new SubTask("name3", "desc3", epic.getId(), LocalDateTime
                 .now().plusMinutes(30), Duration.ofMinutes(15)));
     }
@@ -98,8 +97,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void createEpic() {
-        Epic epic1 = taskManager.createEpic(new Epic("name4", "desc4", LocalDateTime.now()
-                .plusMinutes(40), Duration.ofMinutes(15)));
+        Epic epic1 = taskManager.createEpic(new Epic("name4", "desc4"));
         assertEquals(epic1, taskManager.getEpic(4));
     }
 

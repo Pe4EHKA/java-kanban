@@ -30,8 +30,9 @@ public class InMemoryTaskManager implements TaskManager {
         return ++seq;
     }  // Генерация идентификатора.
 
-    protected List<Task> getPrioritizedTasks() {
-        return prioritizedTasks.stream().toList();
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
     }
 
     private void addPrioritized(Task task) {
@@ -78,6 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllTasks() {  // Удаление всех задач.
         tasks.keySet().forEach(historyManager::remove);
+        tasks.values().forEach(prioritizedTasks::remove);
         tasks.clear();
     }
 
@@ -85,6 +87,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllEpics() {
         epics.keySet().forEach(historyManager::remove);
         subTasks.keySet().forEach(historyManager::remove);
+        subTasks.values().forEach(prioritizedTasks::remove);
         subTasks.clear();
         epics.clear();
     }
@@ -92,6 +95,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllSubTasks() {
         subTasks.keySet().forEach(historyManager::remove);
+        subTasks.values().forEach(prioritizedTasks::remove);
         subTasks.clear();
         epics.values().forEach(epic -> {
             epic.removeAllTasks();
@@ -159,7 +163,7 @@ public class InMemoryTaskManager implements TaskManager {
             throw new IllegalStateException("Task with id " + task.getId() + " does not exist");
         }
         prioritizedTasks.remove(savedTask);
-        addPrioritized(savedTask);
+        addPrioritized(task);
         tasks.put(task.getId(), task);
     }
 

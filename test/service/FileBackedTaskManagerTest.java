@@ -49,5 +49,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertEquals(restoredManager.getTasks(), restoredManager2.getTasks());
         assertEquals(restoredManager.getEpics(), restoredManager2.getEpics());
         assertEquals(restoredManager.getSubTasks(), restoredManager2.getSubTasks());
+        assertEquals(restoredManager.getPrioritizedTasks(), restoredManager2.getPrioritizedTasks());
     }
 }

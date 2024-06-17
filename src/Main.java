@@ -26,8 +26,7 @@ public class Main {
         task2.setStatus(Status.DONE);
         taskManager.createTask(task2);
 
-        Epic epic1 = new Epic("Стать Java-разработчиком", "Учиться и практиковаться", now
-                .plusMinutes(42), Duration.ofMinutes(20));
+        Epic epic1 = new Epic("Стать Java-разработчиком", "Учиться и практиковаться");
         taskManager.createEpic(epic1);
 
         SubTask subTask11 = new SubTask("JavaCore", "Изучить основы Java", epic1.getId(), now
@@ -38,8 +37,7 @@ public class Main {
         taskManager.createSubTask(subTask11);
         taskManager.createSubTask(subTask12);
 
-        Epic epic2 = new Epic("Сдать курсовой проект", "Подготовить все материалы", now
-                .plusMinutes(95), Duration.ofMinutes(20));
+        Epic epic2 = new Epic("Сдать курсовой проект", "Подготовить все материалы");
         taskManager.createEpic(epic2);
 
         SubTask subTask21 = new SubTask("Презентация",

@@ -27,7 +27,7 @@ public class TaskConverter {
 
         Task task = switch (type) {
             case TASK -> new Task(name, description, startTime, duration);
-            case EPIC -> new Epic(name, description, startTime, duration);
+            case EPIC -> new Epic(name, description);
             case SUBTASK -> {
                 int epicId = Integer.parseInt(data.get(5));
                 yield new SubTask(name, description, epicId, startTime, duration);

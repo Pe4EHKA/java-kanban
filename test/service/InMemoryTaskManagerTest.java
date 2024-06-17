@@ -35,13 +35,12 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Test
     @DisplayName("Create Epic")
     public void shouldCreateEpicAndEqualsToHimself() {
-        Epic epic1 = new Epic(epic.getName(), epic.getDescription(), LocalDateTime.now().plusMinutes(50),
-                Duration.ofMinutes(15));
+        Epic epic1 = new Epic(epic.getName(), epic.getDescription());
         epic1.setId(epic.getId());
         epic1.addTask(subTask.getId());
         assertEquals(epic1, epic, "Epic should equal to his copy");
-        taskManager.createTask(epic1);
-        assertNotNull(taskManager.getTask(epic1.getId()));
+        taskManager.createEpic(epic1);
+        assertNotNull(taskManager.getEpic(epic1.getId()));
     }
 
     @Test
@@ -236,5 +235,16 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                     .plusMinutes(50),
                     Duration.ofMinutes(15)));
         });
+    }
+
+    @Test
+    @DisplayName("Prioritized Tasks should be in order")
+    public void shouldPrioritizeTasks() {
+        Task taskNew = taskManager.createTask(new Task("name4", "description4", LocalDateTime.now()
+                .minusMinutes(60),
+                Duration.ofMinutes(15)));
+        SubTask subTaskNew = taskManager.createSubTask(new SubTask("name5", "description5",
+                epic.getId(), LocalDateTime.now().plusMinutes(15), Duration.ofMinutes(10)));
+        assertEquals(List.of(taskNew, task, subTaskNew, subTask), taskManager.getPrioritizedTasks());
     }
 }

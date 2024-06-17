@@ -20,6 +20,12 @@ public class Task {
         this.duration = duration;
     }
 
+    public Task(String name, String description) {
+        this.name = name;
+        this.description = description;
+        this.status = Status.NEW;
+    }
+
     public TaskType getType() {
         return TaskType.TASK;
     }
@@ -100,7 +106,8 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "name='" + name + '\'' +
+                "TaskType=" + getType() +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
