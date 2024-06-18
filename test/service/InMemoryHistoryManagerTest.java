@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,11 +25,11 @@ class InMemoryHistoryManagerTest {
     @DisplayName("Initialize of start point")
     public void init() {
         historyManager = new InMemoryHistoryManager();
-        task = new Task("name1", "desc1");
+        task = new Task("name1", "desc1", LocalDateTime.now(), Duration.ofMinutes(15));
         task.setId(1);
         epic = new Epic("name2", "desc2");
         epic.setId(2);
-        subTask = new SubTask("name3", "desc3", epic.getId());
+        subTask = new SubTask("name3", "desc3", epic.getId(), LocalDateTime.now().plusMinutes(20), Duration.ofMinutes(15));
         subTask.setId(3);
     }
 
@@ -51,7 +53,6 @@ class InMemoryHistoryManagerTest {
         for (int i = 0; i < 12; i++) {
             historyManager.add(task);
         }
-        ;
         assertEquals(1, historyManager.getHistory().size());
     }
 
@@ -110,7 +111,7 @@ class InMemoryHistoryManagerTest {
     public void shouldOrderAfterDeletingInTheMiddle() {
         historyManager.add(task);
         historyManager.add(subTask);
-        Task task4 = new Task("name4", "desc4");
+        Task task4 = new Task("name4", "desc4", LocalDateTime.now(), Duration.ofMinutes(15));
         task4.setId(4);
         historyManager.add(task4);
         historyManager.add(epic);

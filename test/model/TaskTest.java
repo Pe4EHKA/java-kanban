@@ -3,6 +3,9 @@ package model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskTest {
@@ -10,9 +13,9 @@ class TaskTest {
     @Test
     @DisplayName("Should equals to copy")
     public void shouldEqualsToCopy() {
-        Task task1 = new Task("name", "desc");
+        Task task1 = new Task("name", "desc", LocalDateTime.now(), Duration.ofMinutes(15));
         task1.setId(1);
-        Task task2 = new Task("name", "desc");
+        Task task2 = new Task("name", "desc", LocalDateTime.now(), Duration.ofMinutes(15));
         task2.setId(1);
         assertEqualsTasks(task1, task2, "SubTasks should be the same");
     }

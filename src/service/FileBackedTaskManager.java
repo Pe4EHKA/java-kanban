@@ -4,10 +4,13 @@ import converter.TaskConverter;
 import model.Epic;
 import model.SubTask;
 import model.Task;
+import service.exception.ManagerSaveException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeSet;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -20,7 +23,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(HistoryManager historyManager) {
         super(historyManager);
-        this.file = new File("tasks.csv");
+        this.file = new File("resources", "tasks.csv");
     }
 
     public static FileBackedTaskManager loadFromFileStatic(File file) {
@@ -31,6 +34,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void loadFromFile() {
         int maxId = 0;
+        TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             reader.readLine();
             while (reader.ready()) {
@@ -38,9 +42,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 final Task task = TaskConverter.fromString(line);
                 final int id = task.getId();
                 switch (task.getType()) {
-                    case TASK -> tasks.put(id, task);
+                    case TASK -> {
+                        tasks.put(id, task);
+                        prioritizedTasks.add(task);
+                    }
                     case EPIC -> epics.put(id, (Epic) task);
-                    case SUBTASK -> subTasks.put(id, (SubTask) task);
+                    case SUBTASK -> {
+                        subTasks.put(id, (SubTask) task);
+                        prioritizedTasks.add(task);
+                    }
                 }
                 maxId = Math.max(maxId, id);
             }
@@ -56,11 +66,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     + file.getAbsolutePath(), e);
         }
         seq = maxId;
+        this.prioritizedTasks = prioritizedTasks;
+        epics.values().forEach(this::recalculationOfEpicTime);
     }
 
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            String data = "id,type,name,status,description,epic";
+            String data = "id,type,name,status,description,epic,duration,startTime";
             writer.write(data);
             writer.newLine();
             for (Map.Entry<Integer, Task> entry : tasks.entrySet()) {
