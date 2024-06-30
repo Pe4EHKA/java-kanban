@@ -21,6 +21,8 @@ public class HistoryHttpHandler extends BaseHttpHandler {
                 if (pathParts.length == 2) {
                     sendText(exchange, gson.toJson(taskManager.getHistory()), 200);
                 }
+            } else {
+                sendMethodNotAllowed(exchange);
             }
         } catch (Exception e) {
             sendInternalError(exchange);

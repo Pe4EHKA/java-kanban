@@ -60,6 +60,8 @@ public class TaskHttpHandler extends BaseHttpHandler {
                         sendNotFound(exchange);
                     }
                 }
+            } else {
+                sendMethodNotAllowed(exchange);
             }
         } catch (ManagerSaveException e) {
             sendText(exchange, "{\"code\":500,\"message\":\"Error saving task\"}", 500);
